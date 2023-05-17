@@ -47,8 +47,8 @@ void atualizaFB(avl *arv, no *novoNo);
 
 void balaneceamento(avl *arv, no *noDesbalanceado);
 
-void rotacaoDir(avl *arv, no *noDesbalanceado);
+void rotacaoDir(no *noDesbalanceado);
 
-void rotacaoEsq(avl *arv, no *noDesbalanceado);
+void rotacaoEsq(no *noDesbalanceado);
 
 #endif //ARVOREBINARIA_ARVOREBINARIA_H

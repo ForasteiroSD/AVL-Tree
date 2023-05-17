@@ -240,31 +240,31 @@ void balaneceamento(avl *arv, no *noDesbalanceado) {
         // Rotação dupla (esquerda depois direita)
         if(filho->fb == 1) {
             int fbNeto = filho->Fdir->fb;
-            rotacaoEsq(arv, filho);
-            rotacaoDir(arv, noDesbalanceado);
+            rotacaoEsq(filho);
+            rotacaoDir(noDesbalanceado);
             // Atualização do fb
             if(fbNeto == -1) noDesbalanceado->fb = 1;
             else if(fbNeto == 1) filho->fb = -1;
         } else /* Rotação simples */ {
-            rotacaoDir(arv, noDesbalanceado);
+            rotacaoDir(noDesbalanceado);
         }
     } else /*Rotação á esquerda*/ {
         filho = noDesbalanceado->Fdir;
         // Rotação dupla (direita depois esquerda)
         if(filho->fb == -1) {
             int fbNeto = filho->Fesq->fb;
-            rotacaoDir(arv, filho);
-            rotacaoEsq(arv, noDesbalanceado);
+            rotacaoDir(filho);
+            rotacaoEsq(noDesbalanceado);
             // Atualização do fb
             if(fbNeto == -1) filho->fb = 1;
             else if(fbNeto == 1) noDesbalanceado->fb = -1;
         } else /* Rotação simples */ {
-            rotacaoEsq(arv, noDesbalanceado);
+            rotacaoEsq(noDesbalanceado);
         }
     }
 }
 
-void rotacaoDir(avl *arv, no *noDesbalanceado) {
+void rotacaoDir(no *noDesbalanceado) {
     no *filho = noDesbalanceado->Fesq;
 
     // Zerando FBs
@@ -276,14 +276,13 @@ void rotacaoDir(avl *arv, no *noDesbalanceado) {
     noDesbalanceado->Fesq = filho->Fdir;
     if(filho->Fdir != NULL) filho->Fdir->pai = noDesbalanceado;
     filho->pai = noDesbalanceado->pai;
-    if(noDesbalanceado->pai == NULL) arv->sentinela->Fdir = filho;
-    else if(noDesbalanceado == noDesbalanceado->pai->Fesq) noDesbalanceado->pai->Fesq = filho;
+    if(noDesbalanceado == noDesbalanceado->pai->Fesq) noDesbalanceado->pai->Fesq = filho;
     else noDesbalanceado->pai->Fdir = filho;
     filho->Fdir = noDesbalanceado;
     noDesbalanceado->pai = filho;
 }
 
-void rotacaoEsq(avl *arv, no *noDesbalanceado) {
+void rotacaoEsq(no *noDesbalanceado) {
     no *filho = noDesbalanceado->Fdir;
 
     // Zerando FBs
@@ -295,8 +294,7 @@ void rotacaoEsq(avl *arv, no *noDesbalanceado) {
     noDesbalanceado->Fdir = filho->Fesq;
     if(filho->Fesq != NULL) filho->Fesq->pai = noDesbalanceado;
     filho->pai = noDesbalanceado->pai;
-    if(noDesbalanceado->pai == NULL) arv->sentinela->Fdir = filho;
-    else if(noDesbalanceado == noDesbalanceado->pai->Fesq) noDesbalanceado->pai->Fesq = filho;
+    if(noDesbalanceado == noDesbalanceado->pai->Fesq) noDesbalanceado->pai->Fesq = filho;
     else noDesbalanceado->pai->Fdir = filho;
     filho->Fesq = noDesbalanceado;
     noDesbalanceado->pai = filho;
