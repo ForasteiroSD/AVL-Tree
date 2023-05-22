@@ -49,7 +49,7 @@ int insereNo(avl *arv, int valor) {
         arv->sentinela->Fdir = noInserir;
         arv->numElementos++;
 
-        atualizaFB(arv, noInserir);
+        atualizaFB_insercao(arv, noInserir);
         return 1;
     } else {
         no *aux = arv->sentinela->Fdir;
@@ -66,7 +66,7 @@ int insereNo(avl *arv, int valor) {
                     aux->Fesq = noInserir;
                     arv->numElementos++;
 
-                    atualizaFB(arv, noInserir);
+                    atualizaFB_insercao(arv, noInserir);
                     return 1;
                 } else aux = aux->Fesq;
             } else {
@@ -80,7 +80,7 @@ int insereNo(avl *arv, int valor) {
                     aux->Fdir = noInserir;
                     arv->numElementos++;
 
-                    atualizaFB(arv, noInserir);
+                    atualizaFB_insercao(arv, noInserir);
                     return 1;
                 } else aux = aux->Fdir;
             }
@@ -108,6 +108,7 @@ int removeNo(avl *arv, int valor) {
                     aux->pai->Fesq = NULL;
                 }
 
+                atualizaFB_remocao(arv, aux, aux->chave);
                 free(aux);
                 arv->numElementos--;
                 return 1;
@@ -123,6 +124,7 @@ int removeNo(avl *arv, int valor) {
                     aux->pai->Fesq = aux->Fesq;
                 }
                 if(aux->Fesq != NULL) aux->Fesq->pai = aux->pai;
+                atualizaFB_remocao(arv, aux, aux->chave);
                 free(aux);
                 arv->numElementos--;
                 return 1;
@@ -138,6 +140,7 @@ int removeNo(avl *arv, int valor) {
                     aux->pai->Fesq = aux->Fdir;
                 }
                 if(aux->Fdir != NULL) aux->Fdir->pai = aux->pai;
+                atualizaFB_remocao(arv, aux, aux->chave);
                 free(aux);
                 arv->numElementos--;
                 return 1;
@@ -160,6 +163,7 @@ int removeNo(avl *arv, int valor) {
                     else aux->Fdir = copia->Fdir;
                     copia->Fdir->pai = copia->pai;
                 }
+                atualizaFB_remocao(arv, aux, aux->chave);
                 free(copia);
                 arv->numElementos--;
                 return 1;
@@ -218,7 +222,7 @@ void processaCarga(avl *arv, char *nomeArquivo) {
 
 /***** AVL *****/
 
-void atualizaFB(avl *arv, no *novoNo) {
+void atualizaFB_insercao(avl *arv, no *novoNo) {
     no *aux = novoNo;
 
     do {
@@ -229,6 +233,21 @@ void atualizaFB(avl *arv, no *novoNo) {
 
     if(aux->fb == 2 || aux->fb == -2) {
         balaneceamento(arv, aux);
+    }
+}
+
+void atualizaFB_remocao(avl *arv, no *noRemovido, int chave){
+    no *aux = noRemovido;
+
+    do {
+        aux = aux->pai;
+        if(chave < aux->chave) aux->fb++;
+        else aux->fb--;
+    } while(aux != arv->sentinela->Fdir && aux->fb == 0);
+
+    if(aux->fb == 2 || aux->fb == -2) {
+        balaneceamento(arv, aux);
+        if(aux != arv->sentinela->Fdir && aux->pai->fb == 0) atualizaFB_remocao(arv, aux->pai, aux->chave);
     }
 }
 
@@ -246,7 +265,12 @@ void balaneceamento(avl *arv, no *noDesbalanceado) {
             if(fbNeto == -1) noDesbalanceado->fb = 1;
             else if(fbNeto == 1) filho->fb = -1;
         } else /* Rotação simples */ {
+            int fbFilho = filho->fb;
             rotacaoDir(noDesbalanceado);
+            if(fbFilho == 0) {
+                noDesbalanceado->fb = -1;
+                filho->fb = 1;
+            }
         }
     } else /*Rotação á esquerda*/ {
         filho = noDesbalanceado->Fdir;
@@ -259,7 +283,12 @@ void balaneceamento(avl *arv, no *noDesbalanceado) {
             if(fbNeto == -1) filho->fb = 1;
             else if(fbNeto == 1) noDesbalanceado->fb = -1;
         } else /* Rotação simples */ {
+            int fbFilho = filho->fb;
             rotacaoEsq(noDesbalanceado);
+            if(fbFilho == 0) {
+                noDesbalanceado->fb = 1;
+                filho->fb = -1;
+            }
         }
     }
 }

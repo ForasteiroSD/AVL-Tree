@@ -9,6 +9,8 @@ int main() {
 
     arv = criaArvore();
     processaCarga(arv, nomeArquivo);
+    removeNo(arv, 157);
+    removeNo(arv, 5);
     imprimePreOrdem(getRaiz(arv));
     printf("\n%d\n", getNumElementos(arv));
 

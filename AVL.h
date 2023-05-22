@@ -43,7 +43,9 @@ void processaCarga(avl *arv, char *nomeArquivo);
 
 /***** AVL *****/
 
-void atualizaFB(avl *arv, no *novoNo);
+void atualizaFB_insercao(avl *arv, no *novoNo);
+
+void atualizaFB_remocao(avl *arv, no *noRemovido, int chave);
 
 void balaneceamento(avl *arv, no *noDesbalanceado);
 
